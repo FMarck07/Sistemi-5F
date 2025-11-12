@@ -7,7 +7,9 @@ access-list <numero acl> deny host <ip computer> 172.16.8.67
 access-list <numero acl> permit any
 
 !- Cancellazione regola
-no access-list <numero acl> deny host <ip>
+no access-list <numero acl>
+!- no access-list <numero acl> deny host <ip>
+
 
 !- Blocco di un intera vlan 
 access-list <numero acl> deny <net-id> <white card mask>
@@ -73,3 +75,4 @@ dns-server <indirizzo_dns>: Imposta il server DNS.
 ip dhcp excluded-address 192.168.1.5 : Exclude a single IP address
 ip dhcp excluded-address 192.168.1.100 192.168.1.103 : Exclude a range of IP addresses
 exit: Esce dalla configurazione del pool. 
+
