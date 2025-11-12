@@ -70,4 +70,7 @@ ip dhcp pool <nome_pool>: Crea un pool DHCP con un nome specifico.
 network <indirizzo_rete> <subnet_mask>: Specifica la rete per il pool. 
 default-router <indirizzo_ip_router>: Imposta il gateway predefinito. 
 dns-server <indirizzo_dns>: Imposta il server DNS. 
+ip dhcp excluded-address 192.168.1.5 : Exclude a single IP address
+ip dhcp excluded-address 192.168.1.100 192.168.1.103 : Exclude a range of IP addresses
 exit: Esce dalla configurazione del pool. 
+
