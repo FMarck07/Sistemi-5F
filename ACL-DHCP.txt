@@ -61,4 +61,13 @@ Per bloccare il ping (ICMP) devo usare queste perché servono più info,
 non basta solo l'ip sorgente ma anche quallo destinatario
 
 COMANDO: access-list 101 deny icmp any any
+
 --> nego l'accesso all'icmp, da una sorgente qualsiasi e da un destinatario qualsiasi (any any)
+
+enable: Entra in modalità privilegiata. 
+configure terminal: Entra in modalità di configurazione globale. 
+ip dhcp pool <nome_pool>: Crea un pool DHCP con un nome specifico. 
+network <indirizzo_rete> <subnet_mask>: Specifica la rete per il pool. 
+default-router <indirizzo_ip_router>: Imposta il gateway predefinito. 
+dns-server <indirizzo_dns>: Imposta il server DNS. 
+exit: Esce dalla configurazione del pool. 
