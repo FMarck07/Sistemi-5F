@@ -1,0 +1,64 @@
+COMANDI ACL (config t)
+!- Blocco di un solo host
+interface vlan <id>
+ip access-group <numero acl> <in/out>
+exit
+access-list <numero acl> deny host <ip computer> 172.16.8.67
+access-list <numero acl> permit any
+
+!- Cancellazione regola
+no access-list <numero acl> deny host <ip>
+
+!- Blocco di un intera vlan 
+access-list <numero acl> deny <net-id> <white card mask>
+access-list <numero acl> permit any
+
+!- ACL estese
+interface <int>
+ip access-group <numero acl> <in/out>
+exit
+access-list <numero acl> deny <protocollo> any any
+access-list <numero acl> permit ip any any
+end
+
+-------------------------------------------------------------------------------------
+
+TEORIA (?)
+Con un ACL posso bloccare un intero traffico tra due reti
+Blocco da un rete.wild card a un altra rete.wild card
+
+Se cancello una regola e la riscrivo:
+10 - 10
+20 - x
+30 - 30
+   - 40
+
+Sennò posso inserirne una nuova tra due già esistenti
+10, x, 30
+10, 15, 30
+
+
+=== ACL Standard ===
+max livello 3 ISO/OSI
+ACL --> 1-99 --> id 
+
+blocco in ingresso --> in
+blocco in uscita --> out
+
+Le regole vanno sempre applicate solo agli ip sorgente (sia in entrata che in uscita)
+
+In un ACL se blocchiamo un host singolo, tutti gli altri (anche se sulla stessa vlan)
+possono passare
+
+Per bloccare un intera vlan devo bloccare l'intero range di indirizzi che ha assegnati.
+Nel comando vado a inserire il net-id e la white card mask
+Calcolo white card --> complemento a 1 della SM
+
+=== ACL Estese ===
+ACL --> 100
+
+Per bloccare il ping (ICMP) devo usare queste perché servono più info, 
+non basta solo l'ip sorgente ma anche quallo destinatario
+
+COMANDO: access-list 101 deny icmp any any
+--> nego l'accesso all'icmp, da una sorgente qualsiasi e da un destinatario qualsiasi (any any)
