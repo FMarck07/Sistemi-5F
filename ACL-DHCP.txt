@@ -76,3 +76,28 @@ ip dhcp excluded-address 192.168.1.5 : Exclude a single IP address
 ip dhcp excluded-address 192.168.1.100 192.168.1.103 : Exclude a range of IP addresses
 exit: Esce dalla configurazione del pool. 
 
+
+
+Switch>en
+Switch#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+Switch(config)#int vlan 10
+Switch(config-if)#ip address 192.168.10.254 255.255.255.0
+Switch(config-if)#ip dhcp pool Progettazione
+Switch(dhcp-config)#network 192.168.10.1 255.255.255.0
+Switch(dhcp-config)#default-router 192.168.10.254
+Switch(dhcp-config)#ex
+Switch(config)#int vlan 20
+Switch(config-if)#ip address 192.168.20.254 255.255.255.0
+Switch(config-if)#ip dhcp pool Produzione
+Switch(dhcp-config)#network 192.168.20.1 255.255.255.0
+Switch(dhcp-config)#default-router 192.168.20.254
+Switch(dhcp-config)#ex
+Switch(config)#int vlan 30
+Switch(config-if)#ip address 192.168.30.254 255.255.255.0
+Switch(config-if)#ip dhcp pool Tecnica-Server
+Switch(dhcp-config)#network 192.168.30.1 255.255.255.0
+Switch(dhcp-config)#default-router 192.168.30.254
+Switch(dhcp-config)#ex
+Switch(config)#
+Switch(config
