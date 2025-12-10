@@ -110,3 +110,12 @@ Switch(config-if)#ex
 Switch(config)#ex
 
 
+
+% Incomplete command.
+Router(config)#access-list 110 deny tcp host 192.168.200.1 host 172.0.0.1 eq 80
+Router(config)#access-list 110 permit ip any any
+Router(config)#ex
+Router(config)#int f0/0	
+Router(config-if)#ip access-group 110 in
+Router(config-if)#ex
+Router(config)#ex
