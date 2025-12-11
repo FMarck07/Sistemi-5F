@@ -1,0 +1,108 @@
+MULTILAYER
+
+Switch> enable
+Switch# conf t
+
+! 1. Abilita il Routing
+Switch(config)# ip routing
+
+! 2. Crea le VLAN
+Switch(config)# vlan 10
+Switch(config-vlan)# name PROGETTAZIONE
+Switch(config)# vlan 20
+Switch(config-vlan)# name PRODUZIONE
+Switch(config)# vlan 30
+Switch(config-vlan)# name SERVIZI
+Switch(config)# exit
+
+! 3. Configura le Interfacce VLAN (SVI - Gateway)
+! VLAN 10
+Switch(config)# interface vlan 10
+Switch(config-if)# ip address 192.168.10.254 255.255.255.0
+Switch(config-if)# ip helper-address 192.168.30.1   ! Chiede l'IP a Server0
+Switch(config-if)# no shutdown
+
+! VLAN 20
+Switch(config)# interface vlan 20
+Switch(config-if)# ip address 192.168.20.254 255.255.255.0
+Switch(config-if)# ip helper-address 192.168.30.1
+Switch(config-if)# no shutdown
+
+! VLAN 30 (Dove c'è il Server0, non serve helper)
+Switch(config)# interface vlan 30
+Switch(config-if)# ip address 192.168.30.254 255.255.255.0
+Switch(config-if)# no shutdown
+
+! 4. Configura la porta verso il Router0 (Porta Routata)
+Switch(config)# interface fa0/10   ! (Controlla la tua porta esatta)
+Switch(config-if)# no switchport
+Switch(config-if)# ip address 192.168.100.2 255.255.255.0
+Switch(config-if)# no shutdown
+
+! 5. Rotta di Default (Per uscire su Internet)
+Switch(config)# ip route 0.0.0.0 0.0.0.0 192.168.100.1
+
+
+Router con MULTILAYER
+
+Router> enable
+Router# conf t
+
+! 1. Interfaccia verso lo Switch Multilayer
+Router(config)# interface fa0/0
+Router(config-if)# ip address 192.168.100.1 255.255.255.0
+Router(config-if)# no shutdown
+
+! 2. Interfaccia Seriale (WAN - Lato con Orologio)
+Router(config)# interface Serial2/0
+Router(config-if)# ip address 9.0.0.1 255.0.0.0
+Router(config-if)# clock rate 64000     ! Obbligatorio lato DCE
+Router(config-if)# no shutdown
+
+! 3. Rotte Statiche
+! Verso le VLAN sotto lo switch
+Router(config)# ip route 192.168.10.0 255.255.255.0 192.168.100.2
+Router(config)# ip route 192.168.20.0 255.255.255.0 192.168.100.2
+Router(config)# ip route 192.168.30.0 255.255.255.0 192.168.100.2
+
+! Verso la Nuova Rete di Destra (172.x)
+Router(config)# ip route 172.0.0.0 255.0.0.0 9.0.0.2
+
+
+
+router senza MULTILAYER
+
+  
+Router> enable
+Router# conf t
+
+! 1. Pulisci eventuali configurazioni errate (Fa1/0)
+Router(config)# interface fa1/0
+Router(config-if)# no ip address
+Router(config-if)# shutdown
+
+! 2. Interfaccia Seriale (WAN - Riceve clock)
+Router(config)# interface Serial2/0
+Router(config-if)# ip address 9.0.0.2 255.0.0.0
+Router(config-if)# no shutdown
+
+! 3. Interfaccia LAN verso i PC e Server1 (Fa0/0)
+Router(config)# interface fa0/0
+Router(config-if)# ip address 172.0.0.254 255.0.0.0
+Router(config-if)# ip helper-address 192.168.30.1   ! Manda DHCP a sinistra
+Router(config-if)# no shutdown
+
+! 4. Rotta di Ritorno (Verso Sinistra)
+Router(config)# ip route 0.0.0.0 0.0.0.0 9.0.0.1
+
+
+
+
+  
+Switch# conf t
+Switch(config)# interface fa0/1       ! Porta verso l'alto (Uplink)
+Switch(config-if)# switchport mode trunk
+
+Switch(config)# interface range fa0/2-24 ! Porte verso i PC
+Switch(config-if)# switchport mode access
+Switch(config-if)# switchport access vlan 10  ! (Cambia 10 con 20 o 30 o 1)
